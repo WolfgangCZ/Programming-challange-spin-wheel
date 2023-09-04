@@ -211,19 +211,36 @@ function DrawWheel(context, center, wheelTop, list, count, angleMod)
 }
 
 let start;
+let timestamp = Date.now(); 
+let dt = 0;
+
 function step(timestamp)
 {
     if(start === undefined)
     {
         start = timestamp;
-        window.requestAnimationFrame(step);
     }
-    const elapsed = timestamp - start;
-    console.log(elapsed);
+    const elapsed = (timestamp - start)/1000;
+    dt = elapsed;
+    
+    run();
+    window.requestAnimationFrame(step);
 }
 window.requestAnimationFrame(step);
-//===============================================================
 
+let speed = 0; //1 speed = 1 degree per second
+let elapsedSpin = 0;
+let wheelIsSpinning = false;
+let lastFPS = 0;
+
+//===============================================================
+function run()
+{
+    const baseFps = 60;
+    let fps = dt*baseFps;
+    dt = Math.round(dt);
+    fps = Math.round(fps);
+    console.log(dt);
     const canvas = document.getElementById('wcanvas');
     const context = canvas.getContext("2d");
     let width = window.innerWidth;
@@ -234,7 +251,7 @@ window.requestAnimationFrame(step);
     const textY = 50;
     DrawText(context, "HELLO WORLD", textX, textY, 15, Math.PI/8);
     DrawCircle(context, textX, textY, 3);
-
+    
     const inRadius = 10;
     const outRadius = 200;
     const sectors = ["sector1", "sector2", "sector3"];
@@ -247,23 +264,26 @@ window.requestAnimationFrame(step);
     line1.setAngle(angleRAD);
     //line1.draw(context);
 
-
-    const spinTime = 100000000;
-    const fps = 60;
-    for(let i = 0; i<spinTime; i++)
+    const startSpin = document.getElementById("start-spin");
+    const stopSpin = document.getElementById("stop-spin");
+    startSpin.addEventListener("click", function()
     {
-        break;
-        if(i%fps === 0)
-        {
-            console.log("spin");
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            DrawWheel(context, center, wheelTop, mediumChallenges, mediumChallenges.length, i/fps, 30);
-            DrawCircle(context, center.x, center.y, inRadius);
-            DrawCircle(context, center.x, center.y, outRadius);
-        }
+        speed = 40;
+        wheelIsSpinning = true;
+    });
+    stopSpin.addEventListener("click", function()
+    {
+        speed = 0;
+        wheelIsSpinning = false;
+    });
+    if(wheelIsSpinning)
+    {
+        elapsedSpin = fps*Math.PI/180/baseFps*speed;
     }
-
-
+    DrawWheel(context, center, wheelTop, mediumChallenges, mediumChallenges.length, elapsedSpin, 30);
+    DrawCircle(context, center.x, center.y, inRadius);
+    DrawCircle(context, center.x, center.y, outRadius);
 
     console.log("===FINISH===");
+}
     
