@@ -210,37 +210,43 @@ function DrawWheel(context, center, wheelTop, list, count, angleMod)
     }
 }
 
+function DrawArrow(context, tip, size, angleRad)
+{
+    context.save();
+    context.translate(tip.x,tip.y);
+    context.rotate(-angleRad);
+    context.restore();
+}
+
 let start;
-let timestamp = Date.now(); 
+let timestamp = Date.now();
 let dt = 0;
+let speed = 0; //1 speed = 1 degree per second
+let elapsedSpin = 0;
+let wheelIsSpinning = false;
+let lastFPS = 0;
+//let tickCount = 0;
 
 function step(timestamp)
 {
     if(start === undefined)
     {
         start = timestamp;
+
     }
-    const elapsed = (timestamp - start)/1000;
-    dt = elapsed;
-    
+    dt = (timestamp - start)/1000;
+    start = timestamp;
+    //tickCount++;
+    //console.log(tickCount);
     run();
     window.requestAnimationFrame(step);
 }
 window.requestAnimationFrame(step);
 
-let speed = 0; //1 speed = 1 degree per second
-let elapsedSpin = 0;
-let wheelIsSpinning = false;
-let lastFPS = 0;
 
 //===============================================================
 function run()
 {
-    const baseFps = 60;
-    let fps = dt*baseFps;
-    dt = Math.round(dt);
-    fps = Math.round(fps);
-    console.log(dt);
     const canvas = document.getElementById('wcanvas');
     const context = canvas.getContext("2d");
     let width = window.innerWidth;
@@ -263,12 +269,13 @@ function run()
     let line1 = new Line2d(center, wheelTop);
     line1.setAngle(angleRAD);
     //line1.draw(context);
+    DrawLineV2(context, new Vector2(center.x+outRadius, center.y), new Vector2(center.x+outRadius+20, center.y));
 
     const startSpin = document.getElementById("start-spin");
     const stopSpin = document.getElementById("stop-spin");
     startSpin.addEventListener("click", function()
     {
-        speed = 40;
+        speed = 2; //speed 1 = 1 spin in 1 sec
         wheelIsSpinning = true;
     });
     stopSpin.addEventListener("click", function()
@@ -278,12 +285,14 @@ function run()
     });
     if(wheelIsSpinning)
     {
-        elapsedSpin = fps*Math.PI/180/baseFps*speed;
+        console.log("inside");
+        elapsedSpin += dt*2*Math.PI*speed;
     }
-    DrawWheel(context, center, wheelTop, mediumChallenges, mediumChallenges.length, elapsedSpin, 30);
+    console.log(elapsedSpin);
+    DrawWheel(context, center, wheelTop, extendedLanguageList, extendedLanguageList.length, elapsedSpin, 30);
     DrawCircle(context, center.x, center.y, inRadius);
     DrawCircle(context, center.x, center.y, outRadius);
 
-    console.log("===FINISH===");
 }
+console.log("===FINISH===");
     
