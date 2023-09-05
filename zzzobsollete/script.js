@@ -210,15 +210,15 @@ function DrawWheel(context, center, wheelTop, list, count, angleMod)
     }
 }
 
-function DrawArrow(context, tip, size, angleRad)
+function DrawArrow(context, tip, lenght, angleRad)
 {
     context.save();
-    let end = new Vector2(size, 0);
-    let upperEdge = new Vector2(size/2, size/4);
-    let lowerEdge = new Vector2(size/2, -size/4);
+    let end = new Vector2(lenght, 0);
+    let upperEdge = new Vector2(lenght/2, lenght/4);
+    let lowerEdge = new Vector2(lenght/2, -lenght/4);
     let upperWing= new Line2d(new Vector2(0,0), upperEdge);
     let lowerWing= new Line2d(new Vector2(0,0), lowerEdge);
-    let middleLine= new Line2d(new Vector2(0,0), end);
+    let middleLine= new Line2d(new Vector2(lenght/2,0), end);
     let cross = new Line2d(upperEdge, lowerEdge);
     context.translate(tip.x,tip.y);
     context.rotate(-angleRad);
@@ -285,7 +285,7 @@ function run()
     const stopSpin = document.getElementById("stop-spin");
     startSpin.addEventListener("click", function()
     {
-        speed = 2; //speed 1 = 1 spin in 1 sec
+        speed = 1; //speed 1 = 1 spin in 1 sec
         wheelIsSpinning = true;
     });
     stopSpin.addEventListener("click", function()
