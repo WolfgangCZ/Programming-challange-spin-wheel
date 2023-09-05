@@ -213,8 +213,19 @@ function DrawWheel(context, center, wheelTop, list, count, angleMod)
 function DrawArrow(context, tip, size, angleRad)
 {
     context.save();
+    let end = new Vector2(size, 0);
+    let upperEdge = new Vector2(size/2, size/4);
+    let lowerEdge = new Vector2(size/2, -size/4);
+    let upperWing= new Line2d(new Vector2(0,0), upperEdge);
+    let lowerWing= new Line2d(new Vector2(0,0), lowerEdge);
+    let middleLine= new Line2d(new Vector2(0,0), end);
+    let cross = new Line2d(upperEdge, lowerEdge);
     context.translate(tip.x,tip.y);
     context.rotate(-angleRad);
+    DrawLineLine(context, upperWing);
+    DrawLineLine(context, lowerWing);
+    DrawLineLine(context, middleLine);
+    DrawLineLine(context, cross);
     context.restore();
 }
 
@@ -269,7 +280,6 @@ function run()
     let line1 = new Line2d(center, wheelTop);
     line1.setAngle(angleRAD);
     //line1.draw(context);
-    DrawLineV2(context, new Vector2(center.x+outRadius, center.y), new Vector2(center.x+outRadius+20, center.y));
 
     const startSpin = document.getElementById("start-spin");
     const stopSpin = document.getElementById("stop-spin");
@@ -292,6 +302,7 @@ function run()
     DrawWheel(context, center, wheelTop, extendedLanguageList, extendedLanguageList.length, elapsedSpin, 30);
     DrawCircle(context, center.x, center.y, inRadius);
     DrawCircle(context, center.x, center.y, outRadius);
+    DrawArrow(context, new Vector2(center.x + outRadius, center.y), 50, 0);
 
 }
 console.log("===FINISH===");
