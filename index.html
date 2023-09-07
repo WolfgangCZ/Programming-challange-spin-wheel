@@ -1,19 +1,42 @@
-<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Programming challenge spin wheel</title>
-        <link rel="stylesheet" href="reset.css">
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <header class="header">
-            <h1>PROGRAMMING CHALLENGE SPIN WHEEL</h1>
-        </header> 
-        <div class="spin-wheel-cont">
-            <canvas id="wcanvas"></canvas>      
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+	<title>Spin Wheel</title>
+</head>
+<body>
+    <div class="mainbox" id="mainbox">
+        <div class="box" id="box">
+            <div class="box1">
+                <span class="font span1"><h5>zkouska1</h5></span>
+                <span class="font span2"><h5>zkouska2</h5></span>
+                <span class="font span3"><h5>zkouska3</h5></span>
+                <span class="font span4"><h5>zkouska4</h5></span>
+                <span class="font span5"><h5>zkouska5</h5></span>
+            </div>
+            <div class="box2">
+                <span class="font span1"><h5>neco1</h5></span>
+                <span class="font span2"><h5>neco2</h5></span>
+                <span class="font span3"><h5>neco3</h5></span>
+                <span class="font span4"><h5>neco4</h5></span>
+                <span class="font span5"><h5>neco5</h5></span>
+            </div>
         </div>
-    </body>
-    <script src="script.js" charset="UTF-8"></script>
+        <button class="spin" onclick="spin()">SPIN</button>
+    </div>
+        <audio 
+    controls="controls"
+    id="applause"
+    src="assets/applause.wav"
+    type="audio/wav">
+    </audio>
+    <audio 
+    controls="controls"
+    id="spinning"
+    src="assets/spin.mp3"
+    type="audio/mp3">
+    </audio>
+</body>
+<script src="script.js" charset="UTF-8"></script>
 </html>

@@ -1,4 +1,29 @@
 'use strict';
+
+class Vector2
+{
+    constructor(x, y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+};
+
+const testArray= [1,2,3,4,5,6,7,8];
+
+const W_HEIGHT = 500;
+const W_WIDTH = window.innerWidth;
+const IN_RADIUS = 10;
+const OUT_RADIUS = 200;
+const WHEEL_CENTER = new Vector2(W_WIDTH/2, W_HEIGHT/2);
+const WHEEL_TOP = new Vector2(W_WIDTH/2, W_HEIGHT/2 - OUT_RADIUS);
+const PI = 3.1415926535;
+
+
+window.addEventListener("resize", function(width, height){
+     width = window.innerWidth;
+ });
+
 console.log("===START===");
 
 const basicLanguageList = [
@@ -82,17 +107,6 @@ const hardCHallenges = [
     "news sentiment analizer",
 ];
 
-
-
-class Vector2
-{
-    constructor(x, y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-};
-
 class Line2d
 {
     constructor(start, end)
@@ -163,7 +177,7 @@ function DrawLineLine(context, line)
 function DrawCircle(context, x, y, radius)
 {  
         context.beginPath();
-        context.arc(x, y, radius, 0, 2 * Math.PI);
+        context.arc(x, y, radius, 0, 2 * PI);
         context.lineWidth = 1;
         context.stroke();
 }
@@ -173,9 +187,6 @@ function NormalizeVector(vec)
     return new Vector2(vec.x/lenght, vec.y/lenght);
 }
 
-window.addEventListener("resize", function(width, height){
-    width = window.innerWidth;
-});
 function DrawText(context, text, x, y,  size, angle)
 {
     context.save();
@@ -184,19 +195,26 @@ function DrawText(context, text, x, y,  size, angle)
     context.rotate(-angle);
     context.font = `${size}px Arial`;
     context.fillText(text, 0, size/2.5);
+
     context.restore();
 }
-function DrawWheel(context, center, wheelTop, list, count, angleMod)
+function DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, list, 
+
+    count, angleMod)
 {
     let lines = [];
-    const radius = center.y-wheelTop.y;
+    const radius = WHEEL_CENTER.y-WHEEL_TOP.y;
     for(let i = 0; i < count; i++)
     {
         if(count === 1) break;
-        const rad = Math.PI*2/count;
-        let angle = (rad/2 + rad*i + angleMod);
-        let line = new Line2d(center, wheelTop);
-        let textLine = new Line2d(center, new Vector2(wheelTop.x, wheelTop.y+radius/1.3));
+        const rad = 
+    
+        PI*2/count;
+        let angle = (rad/2 + rad*
+    
+        i + angleMod);
+        let line = new Line2d(WHEEL_CENTER, WHEEL_TOP);
+        let textLine = new Line2d(WHEEL_CENTER, new Vector2(WHEEL_TOP.x, WHEEL_TOP.y+radius/1.3));
         const textSize = (radius)/15;
         line.setAngle(angle);
         textLine.setAngle(angle-rad/2);
@@ -234,9 +252,9 @@ let timestamp = Date.now();
 let dt = 0;
 let speed = 0; //1 speed = 1 degree per second
 let elapsedSpin = 0;
-let wheelIsSpinning = false;
-let lastFPS = 0;
-//let tickCount = 0;
+let speedGoesUp = false;
+let loopCount = 0;
+let maxSpeed = 0;
 
 function step(timestamp)
 {
@@ -247,62 +265,81 @@ function step(timestamp)
     }
     dt = (timestamp - start)/1000;
     start = timestamp;
-    //tickCount++;
-    //console.log(tickCount);
+    
     run();
+    return;
+    loopCount++;
+    //console.log(dt)
     window.requestAnimationFrame(step);
 }
 window.requestAnimationFrame(step);
 
+let spinDuration = maxSpeed;
+
+function SpinWheel(speed, maxSpeed, dt)
+{
+    if(speed < maxSpeed && speedGoesUp) 
+    {
+        speed += dt*0.1;
+    }
+    else
+    {
+        speed -= dt*0.1;
+        speedGoesUp = false;
+    }
+    if(speed <= 0) speed = 0;
+    return speed;
+}
+
+function EvaluateSpin(feedArray, angle, lenght)
+{
+    let pos = (PI*2 - angle);
+    let secAngle = PI*2/lenght;
+    pos = pos / (PI*2 / lenght);
+    pos %= lenght-1;
+    pos = Math.round(pos);
+
+    //my brain is not big enough to solve this other than with this ugly if else statement
+    if(angle < secAngle/2) 
+    {
+        pos = 0;
+    }    
+    else if(angle > secAngle/2 && angle < secAngle) 
+    {
+        pos = lenght - 1;
+    }
+    return feedArray[pos];
+}
 
 //===============================================================
 function run()
 {
     const canvas = document.getElementById('wcanvas');
     const context = canvas.getContext("2d");
-    let width = window.innerWidth;
-    let height = 500;
-    canvas.width = width;
+    canvas.width = W_WIDTH;
     canvas.height = 500;
     const textX = 50;
     const textY = 50;
-    DrawText(context, "HELLO WORLD", textX, textY, 15, Math.PI/8);
+    DrawText(context, "HELLO WORLD", textX, textY, 15, PI/8);
     DrawCircle(context, textX, textY, 3);
-    
-    const inRadius = 10;
-    const outRadius = 200;
-    const sectors = ["sector1", "sector2", "sector3"];
-    const sectorCount = sectors.length;
-    const center = new Vector2(width/2, height/2);
-    const wheelTop = new Vector2(width/2, height/2 - outRadius);
-    const angleDEG = 260;
-    const angleRAD = angleDEG * Math.PI/180;
-    let line1 = new Line2d(center, wheelTop);
-    line1.setAngle(angleRAD);
-    //line1.draw(context);
 
     const startSpin = document.getElementById("start-spin");
-    const stopSpin = document.getElementById("stop-spin");
     startSpin.addEventListener("click", function()
     {
-        speed = 1; //speed 1 = 1 spin in 1 sec
-        wheelIsSpinning = true;
+        maxSpeed = (Math.random()/4 + 0.1); 
+        speedGoesUp = true;
     });
-    stopSpin.addEventListener("click", function()
-    {
-        speed = 0;
-        wheelIsSpinning = false;
-    });
-    if(wheelIsSpinning)
-    {
-        console.log("inside");
-        elapsedSpin += dt*2*Math.PI*speed;
-    }
-    console.log(elapsedSpin);
-    DrawWheel(context, center, wheelTop, extendedLanguageList, extendedLanguageList.length, elapsedSpin, 30);
-    DrawCircle(context, center.x, center.y, inRadius);
-    DrawCircle(context, center.x, center.y, outRadius);
-    DrawArrow(context, new Vector2(center.x + outRadius, center.y), 50, 0);
+    speed = SpinWheel(speed, maxSpeed, dt);
+    elapsedSpin += speed;
+    elapsedSpin %= Math.PI*2;
+    DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, 
+        basicLanguageList, basicLanguageList.length, 
+        elapsedSpin, 30);
+    DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, IN_RADIUS);
+    DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, OUT_RADIUS);
+    DrawArrow(context, new Vector2(WHEEL_CENTER.x + OUT_RADIUS, WHEEL_CENTER.y), 50, 0);
+    let target = EvaluateSpin(basicLanguageList, elapsedSpin, basicLanguageList.length);
+    console.log(target);
 
 }
 console.log("===FINISH===");
