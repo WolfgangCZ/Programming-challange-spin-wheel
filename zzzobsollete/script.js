@@ -269,7 +269,6 @@ function step(timestamp)
     run();
     return;
     loopCount++;
-    //console.log(dt)
     window.requestAnimationFrame(step);
 }
 window.requestAnimationFrame(step);
@@ -280,11 +279,11 @@ function SpinWheel(speed, maxSpeed, dt)
 {
     if(speed < maxSpeed && speedGoesUp) 
     {
-        speed += dt*0.1;
+        speed += dt;
     }
     else
     {
-        speed -= dt*0.1;
+        speed -= dt*0.05;
         speedGoesUp = false;
     }
     if(speed <= 0) speed = 0;
@@ -298,7 +297,6 @@ function EvaluateSpin(feedArray, angle, lenght)
     pos = pos / (PI*2 / lenght);
     pos %= lenght-1;
     pos = Math.round(pos);
-
     //my brain is not big enough to solve this other than with this ugly if else statement
     if(angle < secAngle/2) 
     {
@@ -318,15 +316,11 @@ function run()
     const context = canvas.getContext("2d");
     canvas.width = W_WIDTH;
     canvas.height = 500;
-    const textX = 50;
-    const textY = 50;
-    DrawText(context, "HELLO WORLD", textX, textY, 15, PI/8);
-    DrawCircle(context, textX, textY, 3);
 
     const startSpin = document.getElementById("start-spin");
     startSpin.addEventListener("click", function()
     {
-        maxSpeed = (Math.random()/4 + 0.1); 
+        maxSpeed = (Math.random()/4 + 0.2); 
         speedGoesUp = true;
     });
     speed = SpinWheel(speed, maxSpeed, dt);
@@ -340,7 +334,33 @@ function run()
     DrawArrow(context, new Vector2(WHEEL_CENTER.x + OUT_RADIUS, WHEEL_CENTER.y), 50, 0);
     let target = EvaluateSpin(basicLanguageList, elapsedSpin, basicLanguageList.length);
     console.log(target);
-
 }
+
+for (let i = 0; i<basicLanguageList.length; i++)
+{
+    const checkbox = document.createElement("input");
+    checkbox.type = 'checkbox';
+    checkbox.id = `checkBoxLeft${i}`;
+    checkbox.name = 'langCheckBox';
+
+    const label = document.createElement('label')
+    label.appendChild(document.createTextNode(basicLanguageList[i]));
+
+    const langField = document.getElementById("checkbox-field1");
+    label.htmlFor = `checkBoxLeft${i}`;
+    langField.appendChild(checkbox);
+    langField.appendChild(label);
+
+    const br = document.createElement('br');
+    langField.appendChild(br);
+}
+
+const langField = document.getElementById("checkbox-field1");
+const testNode = document.getElementById("checkBoxLeft0");
+const text = document.createElement("p");
+testNode.appendChild(document.createTextNode("sdfadfgsdafgdfss"));
+testNode.appendChild(text);
+console.log(testNode)
+
 console.log("===FINISH===");
     

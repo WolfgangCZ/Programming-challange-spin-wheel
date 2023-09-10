@@ -1,23 +1,19 @@
-class Number
-{
-    constructor(x) 
-    {
-        this.x = x;    
-    }
-};
-class Data
-{
-    constructor(number) 
-    {
-        this.number = number;    
-    }
-};
 
-const num = new Number(50);
-const data = new Data(num);
-
-console.log("hello");
-console.log(num.x);
-console.log(data.number)
-num.x = 100;
-console.log(data.number.x)
+document.getElementById('submit').onclick = function() {
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'car';
+    checkbox.name = 'interest';
+    checkbox.value = 'car';
+ 
+    var label = document.createElement('label')
+    label.htmlFor = 'car';
+    label.appendChild(document.createTextNode('Car'));
+ 
+    var br = document.createElement('br');
+ 
+    var container = document.getElementById('container');
+    container.appendChild(checkbox);
+    container.appendChild(label);
+    container.appendChild(br);
+}
