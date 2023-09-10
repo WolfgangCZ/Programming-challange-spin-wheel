@@ -1,14 +1,44 @@
-p,
-label {
-    font: 15px 'Exo 2', sans-serif;
+
+*
+{
+    font-family: 'Gill Sans', sans-serif;
+    
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+    
 }
- 
-input {
-    margin: 6px;
+
+
+h1
+{
+    text-align: center;
 }
- 
-button {
-    margin-top: 10px;
-    padding: 2 2;
-    font: 15px 'Exo 2', sans-serif;
+
+.wcanvas
+{
+    width: 100%;
+    height: 100;
+}
+
+.buttonField
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#start-spin
+{
+    padding: 10px;
+    margin: 10px;
+    background-color:orangered;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.options
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
