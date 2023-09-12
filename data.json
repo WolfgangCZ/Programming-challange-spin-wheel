@@ -1,0 +1,58 @@
+{
+    "languages": 
+    [
+        {
+            "name" : "c",
+            "difficulty" : "medium",
+            "tags" : ["low-level", "games", "apps", "compilers", "systems", "interpreters", "security", "graphics engines", "languages"]
+        },
+        {
+            "name" : "c++",
+            "difficulty" : "hard",
+            "tags" : ["low-level", "games", "apps", "security", "backend", "systems", "graphics engines", "ML"]
+        },
+        {
+            "name" : "python",
+            "difficulty" : "easy",
+            "tags" : ["high-level", "data science", "backend", "ML", "automation"]
+        },
+        {
+            "name" : "javascript",
+            "difficulty" : "easy",
+            "tags" : ["high-level", "frontend", "backend", "games", "web apps"]    
+        },
+        {
+            "name" : "HTML, CSS, JS",
+            "difficulty" : "easy",
+            "tags" : ["high-level","frontend", "games", "web apps"]    
+        },
+        {
+            "name" : "C#",
+            "difficulty" : "medium",
+            "tags" : ["medium-level","frontend", "games", "web apps"]    
+        },
+        {
+            "name" : "Java",
+            "difficulty" : "medium",
+            "tags" : ["high-level", "backend", "games", "mobile apps", "web apps", "games", "security"]    
+        }
+    ],
+    "challenges":
+    {
+        "challenge":
+        {
+            "task" : "make a snake game",
+            "difficulty" : "easy",
+            "tags": ["games", "apps"]
+        }
+    },
+    "frameworks" :
+    {
+        "00":
+        {
+            "name" : "react",
+            "difficulty" : "easy",
+            "fields" : ["web", "frontend"]
+        }
+    }
+}

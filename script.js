@@ -1,5 +1,37 @@
 'use strict';
 
+console.log("===START===");
+
+let wholeJsonDataFile;
+let languages;
+let challenges;
+let frameworks;
+
+fetch("data.json")
+.then((response) => response.json())
+.then((json) => {
+    wholeJsonDataFile = json;
+});
+
+async function fetchData() {
+    try {
+      const response = await fetch('https://api.example.com/data');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      // Handle the JSON data here
+      console.log(data);
+      // You can work with the data here or call functions that depend on it
+      processData(data);
+    } catch (error) {
+      // Handle errors here
+      console.error('There was a problem with the fetch operation:', error);
+    }
+  }
+
+
+
 class Vector2
 {
     constructor(x, y)
@@ -24,7 +56,6 @@ window.addEventListener("resize", function(width, height){
      width = window.innerWidth;
  });
 
-console.log("===START===");
 
 const basicLanguageList = [
     "C",
@@ -228,6 +259,7 @@ function DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, list,
     }
 }
 
+
 function DrawArrow(context, tip, lenght, angleRad)
 {
     context.save();
@@ -267,7 +299,7 @@ function step(timestamp)
     start = timestamp;
     
     run();
-    return;
+    //return;
     loopCount++;
     window.requestAnimationFrame(step);
 }
@@ -308,8 +340,37 @@ function EvaluateSpin(feedArray, angle, lenght)
     }
     return feedArray[pos];
 }
-
+/*
+function createCheckboxes(labels) {
+    labels.forEach((labelText, index) => {
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `checkbox${index}`;
+      checkbox.name = "checkboxGroup";
+      container.appendChild(checkbox);
+ 
+      const label = document.createElement("label");
+      label.htmlFor = `checkbox${index}`;
+      label.textContent = labelText;
+      container.appendChild(label);
+ 
+      // Add a click event listener to each checkbox
+      checkbox.addEventListener("click", function () {
+        if (checkbox.checked) {
+          console.log(`Checkbox ${index} is checked.`);
+        } else {
+          console.log(`Checkbox ${index} is unchecked.`);
+        }
+      });
+    });
+  }
+*/
 //===============================================================
+
+
+
+
+
 function run()
 {
     const canvas = document.getElementById('wcanvas');
@@ -334,33 +395,20 @@ function run()
     DrawArrow(context, new Vector2(WHEEL_CENTER.x + OUT_RADIUS, WHEEL_CENTER.y), 50, 0);
     let target = EvaluateSpin(basicLanguageList, elapsedSpin, basicLanguageList.length);
     console.log(target);
+
+    if(!wholeJsonDataFile)
+    {
+        console.log("json not defined yet");
+    }
+    else
+    {
+        const file = wholeJsonDataFile;
+        const tags = languages;
+    }
 }
 
-for (let i = 0; i<basicLanguageList.length; i++)
-{
-    const checkbox = document.createElement("input");
-    checkbox.type = 'checkbox';
-    checkbox.id = `checkBoxLeft${i}`;
-    checkbox.name = 'langCheckBox';
+//TODO: create select options based on 
 
-    const label = document.createElement('label')
-    label.appendChild(document.createTextNode(basicLanguageList[i]));
-
-    const langField = document.getElementById("checkbox-field1");
-    label.htmlFor = `checkBoxLeft${i}`;
-    langField.appendChild(checkbox);
-    langField.appendChild(label);
-
-    const br = document.createElement('br');
-    langField.appendChild(br);
-}
-
-const langField = document.getElementById("checkbox-field1");
-const testNode = document.getElementById("checkBoxLeft0");
-const text = document.createElement("p");
-testNode.appendChild(document.createTextNode("sdfadfgsdafgdfss"));
-testNode.appendChild(text);
-console.log(testNode)
 
 console.log("===FINISH===");
     

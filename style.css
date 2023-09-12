@@ -36,9 +36,3 @@ h1
     border-radius: 5px;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
-
-.options
-{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
