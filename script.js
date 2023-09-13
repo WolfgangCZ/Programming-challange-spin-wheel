@@ -13,25 +13,6 @@ fetch("data.json")
     wholeJsonDataFile = json;
 });
 
-async function fetchData() {
-    try {
-      const response = await fetch('https://api.example.com/data');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      // Handle the JSON data here
-      console.log(data);
-      // You can work with the data here or call functions that depend on it
-      processData(data);
-    } catch (error) {
-      // Handle errors here
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  }
-
-
-
 class Vector2
 {
     constructor(x, y)
@@ -145,7 +126,7 @@ class Line2d
         this.start = new Vector2(start.x, start.y);
         this.end = new Vector2(end.x, end.y);
     }
-    lenght()
+    length()
     {
         return Math.sqrt((this.end.x-this.start.x)*(this.end.x-this.start.x)+(this.end.y-this.start.y)*(this.end.y-this.start.y));
     }
@@ -155,29 +136,29 @@ class Line2d
     }
     setAngle(rad)
     {
-        const lenght = this.lenght();
+        const length = this.length();
         let x = this.end.x - this.start.x;
         let y = this.end.y - this.start.y;
 
         if(x >= 0 && y >= 0)
         {
-            x = lenght*Math.cos(rad);
-            y = lenght*Math.sin(rad);
+            x = length*Math.cos(rad);
+            y = length*Math.sin(rad);
         }
         else if(x >= 0 && y <= 0)
         {
-            x = lenght*Math.cos(rad);
-            y = -lenght*Math.sin(rad);
+            x = length*Math.cos(rad);
+            y = -length*Math.sin(rad);
         }
         else if(x <= 0 && y <= 0)
         {
-            x = -lenght*Math.cos(rad);
-            y = -lenght*Math.sin(rad);
+            x = -length*Math.cos(rad);
+            y = -length*Math.sin(rad);
         }
         else if(x <= 0 && y >= 0)
         {
-            x = -lenght*Math.cos(rad);
-            y = lenght*Math.sin(rad);
+            x = -length*Math.cos(rad);
+            y = length*Math.sin(rad);
         }
 
         this.end.x = x + this.start.x;
@@ -214,8 +195,8 @@ function DrawCircle(context, x, y, radius)
 }
 function NormalizeVector(vec)
 {
-    const lenght = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
-    return new Vector2(vec.x/lenght, vec.y/lenght);
+    const length = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
+    return new Vector2(vec.x/length, vec.y/length);
 }
 
 function DrawText(context, text, x, y,  size, angle)
@@ -260,15 +241,15 @@ function DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, list,
 }
 
 
-function DrawArrow(context, tip, lenght, angleRad)
+function DrawArrow(context, tip, length, angleRad)
 {
     context.save();
-    let end = new Vector2(lenght, 0);
-    let upperEdge = new Vector2(lenght/2, lenght/4);
-    let lowerEdge = new Vector2(lenght/2, -lenght/4);
+    let end = new Vector2(length, 0);
+    let upperEdge = new Vector2(length/2, length/4);
+    let lowerEdge = new Vector2(length/2, -length/4);
     let upperWing= new Line2d(new Vector2(0,0), upperEdge);
     let lowerWing= new Line2d(new Vector2(0,0), lowerEdge);
-    let middleLine= new Line2d(new Vector2(lenght/2,0), end);
+    let middleLine= new Line2d(new Vector2(length/2,0), end);
     let cross = new Line2d(upperEdge, lowerEdge);
     context.translate(tip.x,tip.y);
     context.rotate(-angleRad);
@@ -280,6 +261,7 @@ function DrawArrow(context, tip, lenght, angleRad)
 }
 
 let start;
+let langNameList = [];
 let timestamp = Date.now();
 let dt = 0;
 let speed = 0; //1 speed = 1 degree per second
@@ -322,12 +304,12 @@ function SpinWheel(speed, maxSpeed, dt)
     return speed;
 }
 
-function EvaluateSpin(feedArray, angle, lenght)
+function EvaluateSpin(feedArray, angle, length)
 {
     let pos = (PI*2 - angle);
-    let secAngle = PI*2/lenght;
-    pos = pos / (PI*2 / lenght);
-    pos %= lenght-1;
+    let secAngle = PI*2/length;
+    pos = pos / (PI*2 / length);
+    pos %= length-1;
     pos = Math.round(pos);
     //my brain is not big enough to solve this other than with this ugly if else statement
     if(angle < secAngle/2) 
@@ -336,7 +318,7 @@ function EvaluateSpin(feedArray, angle, lenght)
     }    
     else if(angle > secAngle/2 && angle < secAngle) 
     {
-        pos = lenght - 1;
+        pos = length - 1;
     }
     return feedArray[pos];
 }
@@ -363,16 +345,17 @@ function createCheckboxes(labels) {
         }
       });
     });
-  }
+}
 */
 //===============================================================
 
 
 
-
+//TODO run only when i click on the button
 
 function run()
 {
+
     const canvas = document.getElementById('wcanvas');
     const context = canvas.getContext("2d");
     canvas.width = W_WIDTH;
@@ -388,26 +371,30 @@ function run()
     elapsedSpin += speed;
     elapsedSpin %= Math.PI*2;
     DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, 
-        basicLanguageList, basicLanguageList.length, 
+        langNameList, langNameList.length, 
         elapsedSpin, 30);
     DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, IN_RADIUS);
     DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, OUT_RADIUS);
     DrawArrow(context, new Vector2(WHEEL_CENTER.x + OUT_RADIUS, WHEEL_CENTER.y), 50, 0);
-    let target = EvaluateSpin(basicLanguageList, elapsedSpin, basicLanguageList.length);
+    let target = EvaluateSpin(langNameList, elapsedSpin, langNameList.length);
     console.log(target);
 
+    
     if(!wholeJsonDataFile)
     {
         console.log("json not defined yet");
     }
     else
     {
-        const file = wholeJsonDataFile;
-        const tags = languages;
+        let langList;
+        langList = wholeJsonDataFile.languages;
+        //here i think i need async??
+        for(let i = 0; i< langList.length; i++)
+        {
+            langNameList[i] = (String(langList[i].name));
+        } 
     }
 }
-
-//TODO: create select options based on 
 
 
 console.log("===FINISH===");

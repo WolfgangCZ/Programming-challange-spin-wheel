@@ -12,6 +12,11 @@
             "tags" : ["low-level", "games", "apps", "security", "backend", "systems", "graphics engines", "ML"]
         },
         {
+            "name" : "C#",
+            "difficulty" : "medium",
+            "tags" : ["medium-level","frontend", "games", "web apps"]    
+        },
+        {
             "name" : "python",
             "difficulty" : "easy",
             "tags" : ["high-level", "data science", "backend", "ML", "automation"]
@@ -27,14 +32,19 @@
             "tags" : ["high-level","frontend", "games", "web apps"]    
         },
         {
-            "name" : "C#",
-            "difficulty" : "medium",
-            "tags" : ["medium-level","frontend", "games", "web apps"]    
-        },
-        {
             "name" : "Java",
             "difficulty" : "medium",
             "tags" : ["high-level", "backend", "games", "mobile apps", "web apps", "games", "security"]    
+        },
+        {
+            "name" : "PHP",
+            "difficulty" : "medium",
+            "tags" : ["high-level", "backend", "web apps"]    
+        },
+        {
+            "name" : "Rust",
+            "difficulty" : "medium",
+            "tags" : ["medium-level", "backend", "web apps", "games", "apps", "systems", "security"]    
         }
     ],
     "challenges":
