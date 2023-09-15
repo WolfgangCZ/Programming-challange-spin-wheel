@@ -47,15 +47,88 @@
             "tags" : ["medium-level", "backend", "web apps", "games", "apps", "systems", "security"]    
         }
     ],
-    "challenges":
-    {
-        "challenge":
+    "challenges": [
         {
-            "task" : "make a snake game",
+            "name" : "snake game",
             "difficulty" : "easy",
-            "tags": ["games", "apps"]
+            "tags": ["game"]
+        },
+        {
+            "name" : "sorting algorithm",
+            "difficulty" : "easy",
+            "tags": ["algorithm", "data structures"]
+        },
+        {
+            "name" : "pong game",
+            "difficulty" : "easy",
+            "tags": ["game"]
+        },
+        {
+            "name" : "word finder",
+            "difficulty" : "easy",
+            "tags": ["game"]
+        },
+        {
+            "name" : "calendar",
+            "difficulty" : "easy",
+            "tags": ["app"]
+        },
+        {
+            "name" : "calculator",
+            "difficulty" : "easy",
+            "tags": ["app"]
+        },
+        {
+            "name" : "typing checker",
+            "difficulty" : "easy",
+            "tags": ["app"]
+        },
+        {
+            "name" : "you choose",
+            "difficulty" : "easy",
+            "tags": []
+        },
+        {
+            "name" : "sort. algo with GUI",
+            "difficulty" : "medium",
+            "tags": ["algorith", "data structure", "graphics", "app"]
+        },
+        {
+            "name" : "music player",
+            "difficulty" : "medium",
+            "tags": ["app", "sounds"]
+        },
+        {
+            "name" : "video player",
+            "difficulty" : "medium",
+            "tags": ["app", "graphics", "sounds"]
+        },
+        {
+            "name" : "xxxxxxx",
+            "difficulty" : "xxxxxxx",
+            "tags": ["game"]
+        },
+        {
+            "name" : "xxxxxxx",
+            "difficulty" : "xxxxxxx",
+            "tags": ["game"]
+        },
+        {
+            "name" : "custom ML model",
+            "difficulty" : "medium",
+            "tags": ["ML"]
+        },
+        {
+            "name" : "xxxxxxx",
+            "difficulty" : "xxxxxxx",
+            "tags": ["game"]
+        },
+        {
+            "name" : "xxxxxxx",
+            "difficulty" : "xxxxxxx",
+            "tags": ["game"]
         }
-    },
+    ],
     "frameworks" :
     {
         "00":
