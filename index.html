@@ -9,22 +9,23 @@
 <body>
     <h1>PROGRAMMING CHALLENGE SPIN WHEEL</h1>
     <canvas id="wcanvas"></canvas>
+
     <div class="buttonField">
         <button id="start-spin">SPIN</button>
     </div>
+
     <h2>Options</h2>
-    <div class="options">
-        <div id="checkbox-field">
-            
+    <div class="options-container">
+        <div id="select-container">
+            <label for="cars">Choose what to spin:</label>
+            <select id="opt-list" name="opt-list">
+            </select>
         </div>
+        <div id="checkbox-container">
+
+        </div>
+            
     </div>
-    
-<form action="/action_page.php">
-    <label for="cars">Choose what to spin:</label>
-    <select id="opt-list" name="opt-list">
-        
-    </select>
-</form>
 </body>
 <script src="script.js"></script>
 </html>

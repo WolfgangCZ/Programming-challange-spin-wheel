@@ -2,16 +2,10 @@
 
 console.log("===START===");
 
-let wholeJsonDataFile;
-let languages;
-let challenges;
-let frameworks;
 
-fetch("data.json")
-.then((response) => response.json())
-.then((json) => {
-    wholeJsonDataFile = json;
-});
+let wheelIsGoing = false;
+
+
 
 class Vector2
 {
@@ -22,7 +16,6 @@ class Vector2
     }
 };
 
-const testArray= [1,2,3,4,5,6,7,8];
 
 const W_HEIGHT = 500;
 const W_WIDTH = window.innerWidth;
@@ -31,96 +24,25 @@ const OUT_RADIUS = 200;
 const WHEEL_CENTER = new Vector2(W_WIDTH/2, W_HEIGHT/2);
 const WHEEL_TOP = new Vector2(W_WIDTH/2, W_HEIGHT/2 - OUT_RADIUS);
 const PI = 3.1415926535;
+const canvas = document.getElementById('wcanvas');
+const context = canvas.getContext("2d");
+canvas.width = W_WIDTH;
+canvas.height = 500;
 
 
-window.addEventListener("resize", function(width, height){
-     width = window.innerWidth;
- });
 
 
-const basicLanguageList = [
-    "C",
-    "C++",
-    "C#",
-    "Javascript",
-    "Java",
-    "Python",
-    "HTML, CSS, JS",
-    "PHP",
-    "Rust",
-    "Golang",
-    "you choose"
-];
+window.requestAnimationFrame(step);
 
-const extendedLanguageList = [
-    "Kotlin",
-    "Swift",
-    "R",
-    "Typescript",
-    "Scala",
-    "Jai",
-    "Badh",
-    "SQL",
-    "Perl",
-    "Matlab",
-    "Ruby",
-    "NoSQL"
-];
-
-const paradigmOptions = [
-    "Object oriented programming",
-    "Functional programming"
-];
-
-const otherOptions = [
-    "no framework",
-    "framework allowed"
-];
-
-const easyChallenges = [
-    "Snake game",
-    "pong game",
-    "arbitrary sort. algorithm",
-    "word finder",
-    "calendar",
-    "calculator",
-    "10 fingers typing checker",
-    "you choose",
-];
-
-const mediumChallenges = [
-    "sort. algo with GUI",
-    "music player",
-    "video player",
-    "hashing algorithm",
-    "encrypt, decrypt file",
-    "ftp client",
-    "chatbot",
-    "massenger",
-    "face tracking",
-    "simple ML model (adder)",
-    "snake AI",
-    "pong AI",
-    "some game with AI",
-    "chess",
-    "battleships",
-    "game of life",
-    "nubmers recognizer",
-    "web scraper",
-];
-
-const hardCHallenges = [
-    "programming language",
-    "video subtitle generator",
-    "meme generator",
-    "web search engine",
-    "graphics library",
-    "arbitrary compiler",
-    "news sentiment analizer",
-];
-
-class Line2d
-{
+let wholeJsonDataFile;
+fetch("data.json")
+.then((response) => response.json())
+.then((json) => {
+    wholeJsonDataFile = json;
+});
+ 
+ class Line2d
+ {
     constructor(start, end)
     {
         this.start = new Vector2(start.x, start.y);
@@ -210,9 +132,7 @@ function DrawText(context, text, x, y,  size, angle)
 
     context.restore();
 }
-function DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, list, 
-
-    count, angleMod)
+function DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, list, count, angleMod)
 {
     let lines = [];
     const radius = WHEEL_CENTER.y-WHEEL_TOP.y;
@@ -260,33 +180,7 @@ function DrawArrow(context, tip, length, angleRad)
     context.restore();
 }
 
-let start;
-let langNameList = [];
-let timestamp = Date.now();
-let dt = 0;
-let speed = 0; //1 speed = 1 degree per second
-let elapsedSpin = 0;
-let speedGoesUp = false;
-let loopCount = 0;
 let maxSpeed = 0;
-
-function step(timestamp)
-{
-    if(start === undefined)
-    {
-        start = timestamp;
-
-    }
-    dt = (timestamp - start)/1000;
-    start = timestamp;
-    
-    run();
-    //return;
-    loopCount++;
-    window.requestAnimationFrame(step);
-}
-window.requestAnimationFrame(step);
-
 let spinDuration = maxSpeed;
 
 function SpinWheel(speed, maxSpeed, dt)
@@ -300,7 +194,11 @@ function SpinWheel(speed, maxSpeed, dt)
         speed -= dt*0.05;
         speedGoesUp = false;
     }
-    if(speed <= 0) speed = 0;
+    if(speed <= 0) 
+    {
+        speed = 0;
+        wheelIsGoing = false;
+    }
     return speed;
 }
 
@@ -322,79 +220,214 @@ function EvaluateSpin(feedArray, angle, length)
     }
     return feedArray[pos];
 }
-/*
-function createCheckboxes(labels) {
-    labels.forEach((labelText, index) => {
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = `checkbox${index}`;
-      checkbox.name = "checkboxGroup";
-      container.appendChild(checkbox);
- 
-      const label = document.createElement("label");
-      label.htmlFor = `checkbox${index}`;
-      label.textContent = labelText;
-      container.appendChild(label);
- 
-      // Add a click event listener to each checkbox
-      checkbox.addEventListener("click", function () {
-        if (checkbox.checked) {
-          console.log(`Checkbox ${index} is checked.`);
-        } else {
-          console.log(`Checkbox ${index} is unchecked.`);
-        }
-      });
-    });
-}
-*/
-//===============================================================
 
 
 
-//TODO run only when i click on the button
 
-function run()
+function updateDrawing()
 {
-
-    const canvas = document.getElementById('wcanvas');
-    const context = canvas.getContext("2d");
-    canvas.width = W_WIDTH;
-    canvas.height = 500;
-
-    const startSpin = document.getElementById("start-spin");
-    startSpin.addEventListener("click", function()
-    {
-        maxSpeed = (Math.random()/4 + 0.2); 
-        speedGoesUp = true;
-    });
-    speed = SpinWheel(speed, maxSpeed, dt);
-    elapsedSpin += speed;
-    elapsedSpin %= Math.PI*2;
-    DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, 
-        langNameList, langNameList.length, 
-        elapsedSpin, 30);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, langNameList, langNameList.length, elapsedSpin, 30);
     DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, IN_RADIUS);
     DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, OUT_RADIUS);
     DrawArrow(context, new Vector2(WHEEL_CENTER.x + OUT_RADIUS, WHEEL_CENTER.y), 50, 0);
-    let target = EvaluateSpin(langNameList, elapsedSpin, langNameList.length);
-    console.log(target);
-
-    
-    if(!wholeJsonDataFile)
+}
+let languageList;
+let challengeList;
+let frameworkList;
+let langNameList = [];
+let challengeNameList = [];
+let frameworkNameList = [];
+let dataUploaded = false;
+function getDatafromJSON()
+{
+    if(!dataUploaded)
     {
-        console.log("json not defined yet");
-    }
-    else
-    {
-        let langList;
-        langList = wholeJsonDataFile.languages;
-        //here i think i need async??
-        for(let i = 0; i< langList.length; i++)
+        if(!wholeJsonDataFile)
         {
-            langNameList[i] = (String(langList[i].name));
-        } 
+            console.log("json data not loaded yet");
+        }
+        else
+        {
+            languageList = wholeJsonDataFile.languages;
+            challengeList = wholeJsonDataFile.challenges;
+            frameworkList = wholeJsonDataFile.frameworks;
+            //here i think i need async??
+            for(let i = 0; i< languageList.length; i++)
+            {
+                langNameList[i] = (String(languageList[i].name));
+                challengeNameList[i] = (String(languageList[i].name));
+                frameworkNameList[i] = (String(languageList[i].name));
+            } 
+            console.log("json file succesfully loaded");
+            dataUploaded = true;
+        }
     }
 }
+
+let speed = 0; //1 speed = 1 degree per second
+let elapsedSpin = 0;
+let speedGoesUp = false;
+let loopCount = 0;
+
+
+function calculateSpin()
+{
+    speed = SpinWheel(speed, maxSpeed, dt);
+    elapsedSpin += speed;
+    elapsedSpin %= Math.PI*2;
+    let target = EvaluateSpin(langNameList, elapsedSpin, langNameList.length);
+    console.log(target); //TODO should it be guarded for not loaded data?
+    loopCount++;
+    //TODO get all possible elements
+    //TODO add list of options with
+    
+}
+
+
+
+let checkboxes = [];
+let checkboxIsInitialized = false;
+let chosenList = [];
+/*
+<div id="checkbox-container">
+                <div><input type="checkbox"><span>checkbox1</span></div>
+                <div><input type="checkbox"><span>checkbox2</span></div>
+                <div><input type="checkbox"><span>checkbox2</span></div>
+                </div>
+                */
+function createCheckboxes(labels) {
+    if (!checkboxIsInitialized) {
+        
+        labels.forEach((labelText, index) => 
+        {
+            const container = document.getElementById("checkbox-container");
+            const checkboxItem = document.createElement("div");
+            checkboxItem.classList.add("checkbox-item"); 
+            
+            
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `checkbox${index}`;
+            checkbox.value = "checkbox";
+            checkbox.checked = true;
+            checkboxes.push(checkbox);
+            
+            const label = document.createElement("label");
+            label.htmlFor = `checkbox${index}`;
+            label.textContent = labelText;
+            label.classList.add("checkbox-text"); 
+            checkboxItem.appendChild(checkbox);
+            checkboxItem.appendChild(label);
+            container.appendChild(checkboxItem); 
+        });
+        
+        checkboxIsInitialized = true;
+    }
+}
+//event listener to update checkboxes
+
+/*
+<h2>Options</h2>
+<div class="options-container">
+    <div id="select-container">
+        <label>Choose what to spin:</label>
+        <select id="opt-list" name="opt-list">
+            <option value="something">something</option>
+            <option value="aaa">bbbb</option>
+            <option value="aaa">cccc</option>
+        </select>
+    </div>
+*/
+
+let selectList = [];
+
+let selectIsInitialized = false;
+function createSelect(options)
+{
+    if (!selectIsInitialized) 
+    {
+        const container = document.getElementById("opt-list");
+        options.forEach((optionText, index) => 
+        {
+            const selectItem = document.createElement("div");
+            selectItem.classList.add("select-item"); 
+            const option = document.createElement("option");
+            option.value = `select${index}`;
+            option.text = optionText;
+            
+            selectList.push(option);
+            container.appendChild(option);
+            selectIsInitialized = true;
+        });
+    }
+}
+//EVENTS===============================================================
+
+
+
+function addCheckboxListeners() {
+    checkboxes.forEach((checkbox, index) => {
+        checkbox.addEventListener("click", function()
+        {
+            if (checkboxes[index].checked) {
+                console.log(`Checkbox ${index} is checked.`);
+              } else {
+                console.log(`Checkbox ${index} is unchecked.`);
+              }
+        });
+    });
+}
+function addSelectChangeListener() 
+{
+    const container = document.getElementById("opt-list");
+        container.addEventListener("change", function()
+        {
+            const selectedOption = container.options[container.selectedIndex];
+            console.log(`Selected option: ${selectedOption.text}`);
+        });
+};
+
+
+
+const startSpin = document.getElementById("start-spin");
+startSpin.addEventListener("click", function()
+{
+    wheelIsGoing = true;
+    maxSpeed = (Math.random()/4 + 0.2); 
+    speedGoesUp = true;
+});
+
+//MAIN LOOP============================================================
+
+let start;
+let timestamp = Date.now();
+let dt = 0;
+
+function step(timestamp)
+{
+    if(start === undefined)
+    {
+        start = timestamp;
+    }
+    dt = (timestamp - start)/1000;
+    start = timestamp;
+    //LOGIC
+    updateDrawing();
+    getDatafromJSON();
+    calculateSpin();
+    addCheckboxListeners();
+    addSelectChangeListener();
+    if(dataUploaded) createCheckboxes(langNameList);
+    if(dataUploaded) createSelect(langNameList);
+    //LOGIC
+    return;
+    window.requestAnimationFrame(step);
+}
+
+
+//TODO calculateSpin only when i click on the button
+
 
 
 console.log("===FINISH===");
