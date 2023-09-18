@@ -35,11 +35,9 @@ canvas.height = 500;
 window.requestAnimationFrame(step);
 
 let wholeJsonDataFile;
-fetch("data.json")
-.then((response) => response.json())
-.then((json) => {
-    wholeJsonDataFile = json;
-});
+let selectList = [];
+
+
  
  class Line2d
  {
@@ -138,13 +136,9 @@ function DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, list, count, angleMod)
     const radius = WHEEL_CENTER.y-WHEEL_TOP.y;
     for(let i = 0; i < count; i++)
     {
-        if(count === 1) break;
-        const rad = 
-    
-        PI*2/count;
-        let angle = (rad/2 + rad*
-    
-        i + angleMod);
+        //if(count === 1) break;
+        const rad = PI*2/count;
+        let angle = (rad/2 + rad*i + angleMod);
         let line = new Line2d(WHEEL_CENTER, WHEEL_TOP);
         let textLine = new Line2d(WHEEL_CENTER, new Vector2(WHEEL_TOP.x, WHEEL_TOP.y+radius/1.3));
         const textSize = (radius)/15;
@@ -227,38 +221,35 @@ function EvaluateSpin(feedArray, angle, length)
 function updateDrawing()
 {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, langNameList, langNameList.length, elapsedSpin, 30);
+    DrawWheel(context, WHEEL_CENTER, WHEEL_TOP, optionNameList, optionNameList.length, elapsedSpin, 30);
     DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, IN_RADIUS);
     DrawCircle(context, WHEEL_CENTER.x, WHEEL_CENTER.y, OUT_RADIUS);
     DrawArrow(context, new Vector2(WHEEL_CENTER.x + OUT_RADIUS, WHEEL_CENTER.y), 50, 0);
 }
-let languageList;
-let challengeList;
-let frameworkList;
-let langNameList = [];
-let challengeNameList = [];
-let frameworkNameList = [];
+
+let selectedOptionList = [];
+let optionNameList = [];
 let dataUploaded = false;
 function getDatafromJSON()
 {
     if(!dataUploaded)
     {
+        fetch("data.json")
+        .then((response) => response.json())
+        .then((json) => {
+            wholeJsonDataFile = json;
+        });
         if(!wholeJsonDataFile)
         {
             console.log("json data not loaded yet");
         }
         else
         {
-            languageList = wholeJsonDataFile.languages;
-            challengeList = wholeJsonDataFile.challenges;
-            frameworkList = wholeJsonDataFile.frameworks;
+            selectList.push("languages");
+            selectList.push("challenges");
+            selectList.push("frameworks");
+            selectList.push("custom");
             //here i think i need async??
-            for(let i = 0; i< languageList.length; i++)
-            {
-                langNameList[i] = (String(languageList[i].name));
-                challengeNameList[i] = (String(languageList[i].name));
-                frameworkNameList[i] = (String(languageList[i].name));
-            } 
             console.log("json file succesfully loaded");
             dataUploaded = true;
         }
@@ -276,7 +267,7 @@ function calculateSpin()
     speed = SpinWheel(speed, maxSpeed, dt);
     elapsedSpin += speed;
     elapsedSpin %= Math.PI*2;
-    let target = EvaluateSpin(langNameList, elapsedSpin, langNameList.length);
+    let target = EvaluateSpin(optionNameList, elapsedSpin, optionNameList.length);
     console.log(target); //TODO should it be guarded for not loaded data?
     loopCount++;
     //TODO get all possible elements
@@ -284,28 +275,50 @@ function calculateSpin()
     
 }
 
+function whichOptionIsSelected()
+{
+    const selectElement = document.getElementById("select-list");
+    const selectedOptionIndex = selectElement.selectedIndex;
+    return selectedOptionIndex;
+}
 
+function createCheckBoxList(selectedIndex)
+{
+    switch(selectedIndex)
+    {
+        case 0:
+            selectedOptionList = wholeJsonDataFile.languages;
+            break;
+        case 1:
+            selectedOptionList = wholeJsonDataFile.challenges;
+            break;
+        case 2:
+            selectedOptionList = wholeJsonDataFile.frameworks;
+            break;
+        case 3:
+            selectedOptionList = wholeJsonDataFile.custom;
+            break;
+        default: console.log("couldnt load files");
+    }
+    optionNameList = [];
+    for(let i = 0; i< selectedOptionList.length; i++)
+    {
+        optionNameList[i] = (String(selectedOptionList[i].name));
+    }
+
+}
 
 let checkboxes = [];
 let checkboxIsInitialized = false;
-let chosenList = [];
-/*
-<div id="checkbox-container">
-                <div><input type="checkbox"><span>checkbox1</span></div>
-                <div><input type="checkbox"><span>checkbox2</span></div>
-                <div><input type="checkbox"><span>checkbox2</span></div>
-                </div>
-                */
-function createCheckboxes(labels) {
+
+function createCheckboxes(selectedOptionList) {
     if (!checkboxIsInitialized) {
-        
-        labels.forEach((labelText, index) => 
+        selectedOptionList.forEach((labelText, index) => 
         {
             const container = document.getElementById("checkbox-container");
             const checkboxItem = document.createElement("div");
             checkboxItem.classList.add("checkbox-item"); 
-            
-            
+
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.id = `checkbox${index}`;
@@ -320,34 +333,31 @@ function createCheckboxes(labels) {
             checkboxItem.appendChild(checkbox);
             checkboxItem.appendChild(label);
             container.appendChild(checkboxItem); 
+            checkboxIsInitialized = true;
         });
         
-        checkboxIsInitialized = true;
     }
+}
+
+function removeCheckboxes()
+{
+    const container = document.getElementById("checkbox-container");
+    checkboxes.forEach((checkbox) => 
+    {
+        console.log("removing shit")
+        container.removeChild(checkbox.parentElement);
+    });
+    checkboxes.length = 0;
 }
 //event listener to update checkboxes
 
-/*
-<h2>Options</h2>
-<div class="options-container">
-    <div id="select-container">
-        <label>Choose what to spin:</label>
-        <select id="opt-list" name="opt-list">
-            <option value="something">something</option>
-            <option value="aaa">bbbb</option>
-            <option value="aaa">cccc</option>
-        </select>
-    </div>
-*/
-
-let selectList = [];
 
 let selectIsInitialized = false;
 function createSelect(options)
 {
     if (!selectIsInitialized) 
     {
-        const container = document.getElementById("opt-list");
+        const container = document.getElementById("select-list");
         options.forEach((optionText, index) => 
         {
             const selectItem = document.createElement("div");
@@ -364,27 +374,35 @@ function createSelect(options)
 }
 //EVENTS===============================================================
 
-
-
+//this doesnt have to be even here - rewrite for chosen list
+let chosenCheckboxTrueMask = [];
 function addCheckboxListeners() {
     checkboxes.forEach((checkbox, index) => {
-        checkbox.addEventListener("click", function()
-        {
+
             if (checkboxes[index].checked) {
-                console.log(`Checkbox ${index} is checked.`);
-              } else {
-                console.log(`Checkbox ${index} is unchecked.`);
+                chosenCheckboxTrueMask[index] = true;
+            } else {
+                chosenCheckboxTrueMask[index] = false;
               }
-        });
     });
 }
+
+function filterOutUncheckedBoxses(optionNameList, chosenCheckboxTrueMask)
+{
+    for(let i = optionNameList.length-1; i>-1; i--)
+    {
+        if(!chosenCheckboxTrueMask[i]) optionNameList.splice(i,1);
+    }
+}
+
+//this doesnt have to be even here
 function addSelectChangeListener() 
 {
-    const container = document.getElementById("opt-list");
+    const container = document.getElementById("select-list");
         container.addEventListener("change", function()
         {
-            const selectedOption = container.options[container.selectedIndex];
-            console.log(`Selected option: ${selectedOption.text}`);
+            checkboxIsInitialized = false;
+            removeCheckboxes();
         });
 };
 
@@ -413,20 +431,26 @@ function step(timestamp)
     dt = (timestamp - start)/1000;
     start = timestamp;
     //LOGIC
-    updateDrawing();
     getDatafromJSON();
-    calculateSpin();
-    addCheckboxListeners();
-    addSelectChangeListener();
-    if(dataUploaded) createCheckboxes(langNameList);
-    if(dataUploaded) createSelect(langNameList);
+    if(optionNameList)
+    {
+        createCheckBoxList(whichOptionIsSelected());
+        createSelect(selectList);
+        createCheckboxes(optionNameList);
+        addCheckboxListeners();
+        addSelectChangeListener();
+        filterOutUncheckedBoxses(optionNameList, chosenCheckboxTrueMask)
+        updateDrawing();
+        calculateSpin();
+    }
+    
     //LOGIC
-    return;
     window.requestAnimationFrame(step);
 }
 
-
-//TODO calculateSpin only when i click on the button
+//TODO implement pop up after spin!!!
+//TODO filter out stuff based on difficulty or tags???
+//TODO add promt for custom tag
 
 
 
